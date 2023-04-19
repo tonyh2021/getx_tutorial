@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:getx_app/detail_controller.dart';
 
 import 'content_page.dart';
 import 'my_home_page.dart';
@@ -14,11 +15,27 @@ class DetailPage extends StatefulWidget {
 }
 
 class _DetailPageState extends State<DetailPage> {
+  List<dynamic> _images = [];
+
+  _loadData() async {
+    final asset = DefaultAssetBundle.of(context);
+    final img = await asset.loadString("json/img.json");
+    setState(() {
+      _images = json.decode(img);
+    });
+  }
+
+  @override
+  void initState() {
+    _loadData();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final c = Get.put(DetailController());
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
-    int _currentIndex = 0;
     return Scaffold(
       body: Container(
         color: const Color(0xFFc5e5f3),
@@ -28,8 +45,9 @@ class _DetailPageState extends State<DetailPage> {
                 top: 50,
                 left: 10,
                 child: IconButton(
-                  onPressed: () => Get.back(),
-                  icon: const Icon(Icons.arrow_back_ios),
+                  onPressed: () => Get.to(const ContentPage()),
+                  icon: const Icon(Icons.home_outlined),
+                  color: Colors.white,
                 )),
             Positioned(
               top: 120,
@@ -77,7 +95,8 @@ class _DetailPageState extends State<DetailPage> {
                       Container(
                         width: 70,
                         height: 120,
-                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: const Color(0xFFf3fafc)),
+                        decoration:
+                            BoxDecoration(borderRadius: BorderRadius.circular(20), color: const Color(0xFFf3fafc)),
                         child: const Center(
                           child: Icon(
                             Icons.notifications,
@@ -237,16 +256,14 @@ class _DetailPageState extends State<DetailPage> {
                 top: 540,
                 left: 25,
                 height: 50,
-                child: Container(
-                  child: RichText(
-                      text: const TextSpan(
-                          text: "Total Participants ",
-                          style: TextStyle(fontWeight: FontWeight.w700, fontSize: 20, color: Colors.black),
-                          children: [TextSpan(text: "(11)", style: TextStyle(color: Color(0xFFfbc33e)))])),
-                )),
+                child: RichText(
+                    text: const TextSpan(
+                        text: "Total Participants ",
+                        style: TextStyle(fontWeight: FontWeight.w700, fontSize: 20, color: Colors.black),
+                        children: [TextSpan(text: "(11)", style: TextStyle(color: Color(0xFFfbc33e)))]))),
             //images
             Stack(children: [
-              for (int i = 0; i < 5; i++)
+              for (int i = 0; i < _images.length; i++)
                 Positioned(
                   top: 590,
                   left: (20 + i * 35).toDouble(),
@@ -255,7 +272,7 @@ class _DetailPageState extends State<DetailPage> {
                   child: Container(
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(25),
-                        image: const DecorationImage(image: AssetImage("img/background.jpg"), fit: BoxFit.cover)),
+                        image: DecorationImage(image: AssetImage(_images[i]['img']), fit: BoxFit.cover)),
                   ),
                 )
             ]),
@@ -268,8 +285,15 @@ class _DetailPageState extends State<DetailPage> {
                     Container(
                         width: 60,
                         height: 60,
-                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: Color(0xFFfbc33e)),
-                        child: const Icon(Icons.favorite_border, color: Colors.white)),
+                        decoration:
+                            BoxDecoration(borderRadius: BorderRadius.circular(20), color: const Color(0xFFfbc33e)),
+                        child: IconButton(
+                          icon: const Icon(Icons.favorite_border),
+                          color: Colors.white,
+                          onPressed: () {
+                            c.favCounter();
+                          },
+                        )),
                     const SizedBox(
                       width: 10,
                     ),
