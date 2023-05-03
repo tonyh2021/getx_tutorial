@@ -1,6 +1,4 @@
 import 'dart:convert';
-import 'dart:math';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -11,7 +9,7 @@ class VideoInfo extends StatefulWidget {
   const VideoInfo({Key? key}) : super(key: key);
 
   @override
-  _VideoInfoState createState() => _VideoInfoState();
+  State<VideoInfo> createState() => _VideoInfoState();
 }
 
 class _VideoInfoState extends State<VideoInfo> {
@@ -28,7 +26,7 @@ class _VideoInfoState extends State<VideoInfo> {
 
   _initData() async {
     if (_controller != null) {
-      //如果视频控制器存在，清理掉重新创建
+      // if existing, remove video listener and recreate
       _controller?.removeListener(_videoListener);
       _controller?.dispose();
       _controller = null;
@@ -53,16 +51,16 @@ class _VideoInfoState extends State<VideoInfo> {
     setState(() {
       _curPos = curPosition.toString().substring(2, 7);
       _totalPos = totalPosition.toString().substring(2, 7);
-      _videoTime = "${_curPos}/${_totalPos}";
+      _videoTime = "$_curPos/$_totalPos";
     });
-    print("当前位置${_curPos}，全部${_totalPos}");
-    //如果当前位置是最后的位置就跳到下一个
+    print("current: $_curPos，total: $_totalPos");
+    // if it is the end, jump to the next.
     if (curPosition.toString() != "0:00:00.000000" &&
         curPosition == totalPosition) {
       setState(() {
         _isPlayingIndex = _isPlayingIndex + 1;
         if (_isPlayingIndex >= videoList.length) {
-          //循环回到第一首
+          // go back to the first one.
           _isPlayingIndex = 0;
         }
       });
@@ -207,7 +205,7 @@ class _VideoInfoState extends State<VideoInfo> {
                                                 color: color.AppColor
                                                     .secondPageIconColor,
                                               ),
-                                              SizedBox(
+                                              const SizedBox(
                                                 width: 5,
                                               ),
                                               Text(
@@ -253,10 +251,10 @@ class _VideoInfoState extends State<VideoInfo> {
                                                 SizedBox(
                                                   width: 5.w,
                                                 ),
-                                                Container(
+                                                SizedBox(
                                                   width: 100.w,
                                                   child: Text(
-                                                    "Resistent band, kettebell",
+                                                    "Resistant band, kettle bell",
                                                     overflow: TextOverflow.fade,
                                                     maxLines: 1,
                                                     softWrap: false,
@@ -425,7 +423,7 @@ class _VideoInfoState extends State<VideoInfo> {
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
                 child: Container(
-                  decoration: BoxDecoration(shape: BoxShape.circle, boxShadow: [
+                  decoration: const BoxDecoration(shape: BoxShape.circle, boxShadow: [
                     BoxShadow(
                       offset: Offset(0.0, 0.0),
                       blurRadius: 4.0,
@@ -460,14 +458,14 @@ class _VideoInfoState extends State<VideoInfo> {
                       "Video List",
                       "",
                       snackPosition: SnackPosition.BOTTOM,
-                      icon: Icon(
+                      icon: const Icon(
                         Icons.face,
                         size: 30,
                         color: Colors.white,
                       ),
                       backgroundColor: color.AppColor.gradientSecond,
                       colorText: Colors.white,
-                      messageText: Text(
+                      messageText: const Text(
                         "No videos ahead !",
                         style: TextStyle(
                           fontSize: 20,
@@ -480,7 +478,7 @@ class _VideoInfoState extends State<VideoInfo> {
                   var video_item = videoList.elementAt(_isPlayingIndex);
                   _playVideo(video_item.videoUrl!);
                 },
-                child: Icon(
+                child: const Icon(
                   Icons.fast_rewind,
                   size: 36,
                   color: Colors.white,
@@ -515,14 +513,14 @@ class _VideoInfoState extends State<VideoInfo> {
                     });
                     Get.snackbar("Video List", "",
                         snackPosition: SnackPosition.BOTTOM,
-                        icon: Icon(
+                        icon: const Icon(
                           Icons.face,
                           size: 30,
                           color: Colors.white,
                         ),
                         backgroundColor: color.AppColor.gradientSecond,
                         colorText: Colors.white,
-                        messageText: Text(
+                        messageText: const Text(
                           "You have finished watching all the videos. Congrats !",
                           style: TextStyle(
                             fontSize: 20,
@@ -534,7 +532,7 @@ class _VideoInfoState extends State<VideoInfo> {
                   var video_item = videoList.elementAt(_isPlayingIndex);
                   _playVideo(video_item.videoUrl!);
                 },
-                child: Icon(
+                child: const Icon(
                   Icons.fast_forward,
                   size: 36,
                   color: Colors.white,
@@ -543,8 +541,8 @@ class _VideoInfoState extends State<VideoInfo> {
               width: 100.w,
               margin: EdgeInsets.only(left: 10.w),
               child: Text(
-                "${_videoTime}",
-                style: TextStyle(
+                _videoTime,
+                style: const TextStyle(
                   color: Colors.white,
                   shadows: <Shadow>[
                     Shadow(
@@ -630,10 +628,10 @@ class _VideoInfoState extends State<VideoInfo> {
                     width: 80.h,
                     height: 20.h,
                     decoration: BoxDecoration(
-                      color: Color(0xFFeaeefc),
+                      color: const Color(0xFFeaeefc),
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: Center(
+                    child: const Center(
                       child: Text(
                         "15s rest",
                         style: TextStyle(color: Color(0xFF839fed)),
